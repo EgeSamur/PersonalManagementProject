@@ -2,7 +2,6 @@
 using PersonalManagementProject.Application.Abstractions.Repositories;
 using PersonalManagementProject.Application.Common.Helpers;
 using PersonalManagementProject.Application.Features.Auth.Permissions.DTOs;
-using PersonalManagementProject.Application.Features.Auth.Roles.DTOs;
 using PersonalManagementProject.Domain.Entities.Auth;
 using PersonalManagementProject.Shared.Persistence.Abstraction;
 using PersonalManagementProject.Shared.Utils.Responses;
@@ -49,7 +48,7 @@ public class PermissionService : IPermissionService
         var permission = await _permissionRepository.GetWithProjectionAsync(
           predicate: i => i.Id == id,
           throwExceptionIfNotExists: true,
-          notFoundMessage: MessageHelper.NotFound("Role"),
+          notFoundMessage: MessageHelper.NotFound("Permissions"),
           selector: r => new PermissionDto()
           {
               Id = r.Id,

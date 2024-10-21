@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PersonalManagementProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class second_initialize : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,8 +88,8 @@ namespace PersonalManagementProject.Infrastructure.Migrations
                     hire_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     DepartmentId = table.Column<int>(type: "integer", nullable: false),
-                    password_hash = table.Column<string>(type: "text", nullable: false),
-                    password_salt = table.Column<string>(type: "text", nullable: false),
+                    password_hash = table.Column<byte[]>(type: "bytea", nullable: false),
+                    password_salt = table.Column<byte[]>(type: "bytea", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     created_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),

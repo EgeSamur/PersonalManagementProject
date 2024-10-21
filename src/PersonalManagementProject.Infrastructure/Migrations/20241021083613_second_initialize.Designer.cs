@@ -12,8 +12,8 @@ using PersonalManagementProject.Infrastructure.Persistence.Contexts;
 namespace PersonalManagementProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241020184515_initial")]
-    partial class initial
+    [Migration("20241021083613_second_initialize")]
+    partial class second_initialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -368,14 +368,14 @@ namespace PersonalManagementProject.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("bytea")
                         .HasColumnName("password_hash");
 
-                    b.Property<string>("PasswordSalt")
+                    b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("bytea")
                         .HasColumnName("password_salt");
 
                     b.Property<string>("PhoneNumber")

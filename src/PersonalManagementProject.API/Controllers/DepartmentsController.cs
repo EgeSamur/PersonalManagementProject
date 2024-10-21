@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PersonalManagementProject.Application.Features.Employees.DTOs;
+using PersonalManagementProject.Application.Features.Departmans.DTOs;
 using SnifferApi.Application.Abstractions.Services;
 
 namespace PersonalManagementProject.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class DepartmentsController : ControllerBase
     {
-        private readonly IEmployeeService _service;
+        private readonly IDepartmanService _service;
 
-        public EmployeesController(IEmployeeService service)
+        public DepartmentsController(IDepartmanService service)
         {
             _service = service;
         }
@@ -30,16 +30,23 @@ namespace PersonalManagementProject.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateEmployeeDto dto)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateDepartmanDto dto)
         {
             var result = await _service.CreateAsync(dto);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateEmployeeDto dto)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateDepartmanDto dto)
         {
             var result = await _service.UpdateAsync(dto);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateDepartmanForEmployee([FromBody] UpdateDepartmanForEmployeeDto dto)
+        {
+            var result = await _service.UpdateDepartmanForEmployeeAsync(dto);
             return Ok(result);
         }
 
