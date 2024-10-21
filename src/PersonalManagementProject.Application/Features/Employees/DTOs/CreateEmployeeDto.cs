@@ -14,4 +14,3 @@ public class CreateEmployeeDto
     public int DepartmentId { get; set; }
 }
 
-

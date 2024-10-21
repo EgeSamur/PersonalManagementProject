@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PersonalManagementProject.Application.Features.Employees.DTOs;
+using PersonalManagementProject.Application.Features.PerformanceReviews.DTOs;
 using SnifferApi.Application.Abstractions.Services;
 
 namespace PersonalManagementProject.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class PerformanceViewsController : ControllerBase
     {
-        private readonly IEmployeeService _service;
+        private readonly IPerformanceReviewService _service;
 
-        public EmployeesController(IEmployeeService service)
+        public PerformanceViewsController(IPerformanceReviewService service)
         {
             _service = service;
         }
@@ -30,14 +30,14 @@ namespace PersonalManagementProject.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateEmployeeDto dto)
+        public async Task<IActionResult> CreateAsync([FromBody] CreatePerformanceReviewDto dto)
         {
             var result = await _service.CreateAsync(dto);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateEmployeeDto dto)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdatePerformanceReviewDto dto)
         {
             var result = await _service.UpdateAsync(dto);
             return Ok(result);

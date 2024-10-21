@@ -14,7 +14,7 @@ namespace PersonalManagementProject.Application.Features.Auth.Roles
 {
     public class RoleService : IRoleService
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRoleRepository _roleRepository;   
         private readonly IPermissionRepository _permissionRepository;
         private readonly IRolePermissionRepository _rolePermissionRepository;
         private readonly IEmployeeRepository _employeeRepository;
