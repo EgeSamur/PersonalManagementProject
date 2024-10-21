@@ -1,7 +1,7 @@
 ﻿namespace PersonalManagementProject.Application.Features.Auth.Roles.DTOs;
 
-public class AssignRoleToEmployeeDto
+public class AssignPermissionsToRoleDto
 {
     public int RoleId { get; set; }
-    public int EmployeeId { get; set; }
+    public List<int> PermissionIds { get; set; } = new();
 }

@@ -121,37 +121,77 @@ namespace PersonalManagementProject.Application.Features.Auth.Roles
             await _unitOfWork.SaveChangesAsync();
             return new SuccessResult(MessageHelper.Updated("Role"));
         }
-        public async Task<IResult> AssignRoleToEmployeeAsync(AssignRoleToEmployeeDto dto)
+        public async Task<IResult> AssignRoleToEmployeeAsync(AssignRolesToEmployeeDto dto)
         {
-            var employee = await _employeeRepository.GetAsync(e => e.Id == dto.EmployeeId, throwExceptionIfNotExists: true, notFoundMessage: MessageHelper.NotFound("Employee"));
-            var role = await _roleRepository.GetAsync(r => r.Id == dto.RoleId, throwExceptionIfNotExists: true, notFoundMessage: MessageHelper.NotFound("Role"));
+            // Çalışanı buluyoruz
+            var employee = await _employeeRepository.GetAsync(e => e.Id == dto.EmployeeId,
+                throwExceptionIfNotExists: true,
+                notFoundMessage: MessageHelper.NotFound("Employee"));
 
-            var employeeRole = new EmployeeRole
+            // Mevcut rolleri siliyoruz (IPaginate ile)
+            var existingRolesPaginated = await _employeeRoleRepository.GetListAsync(er => er.EmployeeId == dto.EmployeeId);
+            var existingRoles = existingRolesPaginated.Items.ToList(); // IPaginate içindeki Items'ı alıyoruz
+            await _employeeRoleRepository.DeleteRangeAsync(existingRoles);
+
+            // Yeni rolleri ekliyoruz
+            foreach (var roleId in dto.RoleIds)
             {
-                EmployeeId = employee.Id,
-                RoleId = role.Id
-            };
+                // İlgili rolü (role) buluyoruz
+                var role = await _roleRepository.GetAsync(r => r.Id == roleId,
+                    throwExceptionIfNotExists: true,
+                    notFoundMessage: MessageHelper.NotFound("Role"));
 
-            await _employeeRoleRepository.AddAsync(employeeRole);
+                // Yeni EmployeeRole nesnesi oluşturuyoruz
+                var employeeRole = new EmployeeRole
+                {
+                    EmployeeId = employee!.Id,
+                    RoleId = role!.Id
+                };
+
+                // EmployeeRole'u ekliyoruz
+                await _employeeRoleRepository.AddAsync(employeeRole);
+            }
+
+            // Tüm değişiklikleri kaydediyoruz
             await _unitOfWork.SaveChangesAsync();
 
-            return new SuccessResult(MessageHelper.Created("Role assigned to employee."));
+            return new SuccessResult(MessageHelper.Updated("Employee roles updated."));
         }
-        public async Task<IResult> AssignPermissionToRoleAsync(AssignPermissionToRoleDto dto)
+        public async Task<IResult> AssignPermissionToRoleAsync(AssignPermissionsToRoleDto dto)
         {
-            var role = await _roleRepository.GetAsync(r => r.Id == dto.RoleId, throwExceptionIfNotExists: true, notFoundMessage: MessageHelper.NotFound("Role"));
-            var permission = await _permissionRepository.GetAsync(p => p.Id == dto.PermissionId, throwExceptionIfNotExists: true, notFoundMessage: MessageHelper.NotFound("Permission"));
+            // Rolü buluyoruz
+            var role = await _roleRepository.GetAsync(r => r.Id == dto.RoleId,
+                throwExceptionIfNotExists: true,
+                notFoundMessage: MessageHelper.NotFound("Role"));
 
-            var rolePermission = new RolePermission
+            // Mevcut izinleri siliyoruz (IPaginate ile)
+            var existingPermissionsPaginated = await _rolePermissionRepository.GetListAsync(rp => rp.RoleId == dto.RoleId);
+            var existingPermissions = existingPermissionsPaginated.Items.ToList(); // IPaginate içindeki Items'ı alıyoruz
+            await _rolePermissionRepository.DeleteRangeAsync(existingPermissions);
+
+            // Yeni izinleri ekliyoruz
+            foreach (var permissionId in dto.PermissionIds)
             {
-                RoleId = role.Id,
-                PermissionId = permission.Id
-            };
+                // İlgili izni (permission) buluyoruz
+                var permission = await _permissionRepository.GetAsync(p => p.Id == permissionId,
+                    throwExceptionIfNotExists: true,
+                    notFoundMessage: MessageHelper.NotFound("Permission"));
 
-            await _rolePermissionRepository.AddAsync(rolePermission);
+                // Yeni RolePermission nesnesi oluşturuyoruz
+                var rolePermission = new RolePermission
+                {
+                    RoleId = role!.Id,
+                    PermissionId = permission!.Id
+                };
+
+                // RolePermission'u ekliyoruz
+                await _rolePermissionRepository.AddAsync(rolePermission);
+            }
+
+            // Tüm değişiklikleri kaydediyoruz
             await _unitOfWork.SaveChangesAsync();
 
-            return new SuccessResult(MessageHelper.Created("Permission assigned to role."));
+            return new SuccessResult(MessageHelper.Updated("Role permissions updated."));
         }
     }
 }
