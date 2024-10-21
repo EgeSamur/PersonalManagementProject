@@ -101,18 +101,37 @@ public class PermissionService : IPermissionService
     }
     public async Task<IResult> AssignPermissionToEmployeeAsync(AssignPermissionToEmployeeDto dto)
     {
-        var employee = await _employeeRepository.GetAsync(e => e.Id == dto.EmployeeId, throwExceptionIfNotExists: true, notFoundMessage: MessageHelper.NotFound("Employee"));
-        var permission = await _permissionRepository.GetAsync(r => r.Id == dto.PermissionId, throwExceptionIfNotExists: true, notFoundMessage: MessageHelper.NotFound("Permission"));
+        // Çalışanı buluyoruz
+        var employee = await _employeeRepository.GetAsync(e => e.Id == dto.EmployeeId,
+            throwExceptionIfNotExists: true,
+            notFoundMessage: MessageHelper.NotFound("Employee"));
 
-        var employeePermission = new EmployeePermission
+        // Mevcut izinleri siliyoruz
+        var existingPermissions = await _employeePermissionRepository.GetListAsync(ep => ep.EmployeeId == dto.EmployeeId);
+        _employeePermissionRepository.DeleteRangeAsync(existingPermissions.Items.ToList());
+
+        // Yeni izinleri ekliyoruz
+        foreach (var permissionId in dto.PermissionIds)
         {
-            EmployeeId = employee!.Id,
-            PermissionId = permission!.Id,
-        };
+            // İlgili izni (permission) buluyoruz
+            var permission = await _permissionRepository.GetAsync(r => r.Id == permissionId,
+                throwExceptionIfNotExists: true,
+                notFoundMessage: MessageHelper.NotFound("Permission"));
 
-        await _employeePermissionRepository.AddAsync(employeePermission);
+            // Yeni EmployeePermission nesnesi oluşturuyoruz
+            var employeePermission = new EmployeePermission
+            {
+                EmployeeId = employee!.Id,
+                PermissionId = permission!.Id,
+            };
+
+            // EmployeePermission'u ekliyoruz
+            await _employeePermissionRepository.AddAsync(employeePermission);
+        }
+
+        // Tüm değişiklikleri kaydediyoruz
         await _unitOfWork.SaveChangesAsync();
 
-        return new SuccessResult(MessageHelper.Created("Permisson assigned to employee."));
+        return new SuccessResult(MessageHelper.Updated("Employee permissions updated."));
     }
 }

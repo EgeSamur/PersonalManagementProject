@@ -2,7 +2,6 @@
 
 public class AssignPermissionToEmployeeDto
 {
-    public int EmployeeId { get; set; }
-    public int PermissionId { get; set; }
-
+    public int EmployeeId { get; set; }  // Tek bir employee
+    public List<int> PermissionIds { get; set; }  // Birden fazla permission
 }

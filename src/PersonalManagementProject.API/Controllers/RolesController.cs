@@ -37,14 +37,14 @@ namespace PersonalManagementProject.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignPermissionToRoleAsync([FromBody] AssignPermissionToRoleDto dto)
+        public async Task<IActionResult> AssignPermissionToRoleAsync([FromBody] AssignPermissionsToRoleDto dto)
         {
             var result = await _service.AssignPermissionToRoleAsync(dto);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignRoleToEmployeeAsync([FromBody] AssignRoleToEmployeeDto dto)
+        public async Task<IActionResult> AssignRoleToEmployeeAsync([FromBody] AssignRolesToEmployeeDto dto)
         {
             var result = await _service.AssignRoleToEmployeeAsync(dto);
             return Ok(result);
